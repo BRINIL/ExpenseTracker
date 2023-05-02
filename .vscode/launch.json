@@ -1,0 +1,53 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "ExpenseTrackerSignup",
+            "request": "launch",
+            "mainClass": "ExpenseTrackerSignup",
+            "projectName": "Expense_tracker_88e05f42"
+        },
+        {
+            "type": "java",
+            "name": "SignUp",
+            "request": "launch",
+            "mainClass": "SignUp",
+            "projectName": "Expense_tracker_88e05f42"
+        },
+        {
+            "type": "java",
+            "name": "ExpenseTrackerLogin",
+            "request": "launch",
+            "mainClass": "ExpenseTrackerLogin",
+            "projectName": "Expense_tracker_88e05f42"
+        },
+        {
+            "type": "java",
+            "name": "DBConnection",
+            "request": "launch",
+            "mainClass": "DBConnection",
+            "projectName": "Expense_tracker_88e05f42"
+        },
+        {
+            "type": "java",
+            "name": "ExpenseTrackerDB",
+            "request": "launch",
+            "mainClass": "ExpenseTrackerDB",
+            "projectName": "Expense_tracker_88e05f42"
+        },
+        {
+            "type": "java",
+            "name": "ExpenseTrackerUI",
+            "request": "launch",
+            "mainClass": "ExpenseTrackerUI",
+            "projectName": "Expense_tracker_88e05f42"
+        },
+        {
+            "type": "java",
+            "name": "Launch App",
+            "request": "launch",
+            "mainClass": "your.package.Main",
+            "vmArgs": "--module-path /path/to/javafx-sdk-16/lib --add-modules javafx.controls,javafx.fxml"
+        }
+    ]
+}
