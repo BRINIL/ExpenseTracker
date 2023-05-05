@@ -2,6 +2,34 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ExpenseTracker",
+            "request": "launch",
+            "mainClass": "ExpenseTracker",
+            "projectName": "ExpenseTracker_eeb2440e"
+        },
+        {
+            "type": "java",
+            "name": "DBConnection",
+            "request": "launch",
+            "mainClass": "DBConnection",
+            "projectName": "ExpenseTracker_eeb2440e"
+        },
+        {
+            "type": "java",
+            "name": "ExpenseTrackerSignup",
+            "request": "launch",
+            "mainClass": "ExpenseTrackerSignup",
+            "projectName": "ExpenseTracker_eeb2440e"
+        },
+        {
+            "type": "java",
+            "name": "ExpenseTrackerLogin",
+            "request": "launch",
+            "mainClass": "ExpenseTrackerLogin",
+            "projectName": "ExpenseTracker_eeb2440e"
+        },
+        {
+            "type": "java",
             "name": "ExpenseTrackerSignup",
             "request": "launch",
             "mainClass": "ExpenseTrackerSignup",
