@@ -7,6 +7,11 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ExpenseTrackerLogin {
     private JFrame frame;
@@ -99,6 +104,7 @@ public class ExpenseTrackerLogin {
                 }
             }
         });
+        
 
         // Create a tabbed pane to switch between login and signup
         JTabbedPane tabbedPane = new JTabbedPane();
@@ -111,48 +117,71 @@ public class ExpenseTrackerLogin {
     }
 
     private boolean validateUser(String username, String password) {
-        // Open the user credentials file and check if the username and password match
+        // Connect to the database
         try {
-            File file = new File("users.txt");
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(",");
-                if (parts[0].equals(username) && parts[1].equals(password)) {
-                    return true;
-                }
+            String url = "jdbc:mysql://localhost:3306/expensetracker";
+            String user = "root";
+            String dbPassword = "1234";
+            Connection conn = DriverManager.getConnection(url, user, dbPassword);
+
+            // Check if the username and password match
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user WHERE username = ? AND password = ?");
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                rs.close();
+                stmt.close();
+                conn.close();
+                return true;
+            } else {
+                rs.close();
+                stmt.close();
+                conn.close();
+                return false;
             }
-            scanner.close();
-        } catch (FileNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
-    
-    private boolean createUser(String username, String password) {
-        // Open the user credentials file and check if the username is taken
+
+    private boolean createUser(String userID, String password) {
+        // Connect to the database
         try {
-            File file = new File("users.txt");
-            Scanner scanner = new Scanner(file);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(",");
-                if (parts[0].equals(username)) {
-                    scanner.close();
-                    return false;
-                }
+            String url = "jdbc:mysql://localhost:3306/expensetracker";
+            String user = "root";
+            String dbPassword = "1234";
+            Connection conn = DriverManager.getConnection(url, user, dbPassword);
+
+
+            // Check if the username is taken
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM user WHERE userID = ?");
+            stmt.setString(1, userID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                rs.close();
+                stmt.close();
+                conn.close();
+                return false;
             }
-            scanner.close();
-    
-            // Add the new user to the file
-            FileWriter writer = new FileWriter(file, true);
-            writer.write(username + "," + password + "\n");
-            writer.close();
-        } catch (IOException e) {
+
+            // Add the new user to the database
+            stmt = conn.prepareStatement("INSERT INTO users (userID, password) VALUES (?, ?)");
+            stmt.setString(1, userID);
+            stmt.setString(2, password);
+            stmt.executeUpdate();
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return true;
     }
+
+    // other code
+
     
     private void openExpenseTracker() {
         // Implement the expense tracker GUI here
@@ -168,5 +197,7 @@ public class ExpenseTrackerLogin {
         expenseTracker.show();
     }
 }
+
+
 
     

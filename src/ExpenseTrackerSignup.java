@@ -101,7 +101,7 @@ signupButton.addActionListener(new ActionListener() {
                 // Connect to the database
                 String url = "jdbc:mysql://localhost:3306/expensetracker";
                 String user = "root";
-                String dbPassword = "12345";
+                String dbPassword = "1234";
                 Connection conn = DriverManager.getConnection(url, user, dbPassword);
 
                 // Check if the user already exists
