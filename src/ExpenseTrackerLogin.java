@@ -1,99 +1,74 @@
 import javax.swing.*;
-import javax.swing.table.TableModel;
-
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.*;
 
-public class ExpenseTrackerLogin {
-    private JFrame loginFrame;
-    private JTextField usernameField;
-    private JPasswordField passwordField;
+public class ExpenseTrackerLogin extends JFrame implements ActionListener {
+    JLabel userLabel, passwordLabel;
+    JTextField userTextField;
+    JPasswordField passwordField;
+    JButton loginButton, resetButton, signupButton;
 
-    public ExpenseTrackerLogin() {
-        loginFrame = new JFrame("Expense Tracker - Login");
-        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    ExpenseTrackerLogin() {
+        userLabel = new JLabel("Username");
+        userLabel.setBounds(50, 50, 100, 30);
 
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.insets = new Insets(10, 10, 10, 10);
+        passwordLabel = new JLabel("Password");
+        passwordLabel.setBounds(50, 100, 100, 30);
 
-        JLabel usernameLabel = new JLabel("Username:");
-        panel.add(usernameLabel, constraints);
+        userTextField = new JTextField();
+        userTextField.setBounds(150, 50, 150, 30);
 
-        constraints.gridx = 1;
-        usernameField = new JTextField();
-        panel.add(usernameField, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        JLabel passwordLabel = new JLabel("Password:");
-        panel.add(passwordLabel, constraints);
-
-        constraints.gridx = 1;
         passwordField = new JPasswordField();
-        panel.add(passwordField, constraints);
+        passwordField.setBounds(150, 100, 150, 30);
 
-        JButton loginButton = new JButton("Login");
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
+        loginButton = new JButton("Login");
+        loginButton.setBounds(50, 150, 100, 30);
+        loginButton.addActionListener(this);
 
-                if (username.isEmpty() || password.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please enter a username and password.");
-                    return;
-                }
+        resetButton = new JButton("Reset");
+        resetButton.setBounds(200, 150, 100, 30);
+        resetButton.addActionListener(this);
 
-                User user = authenticate(username, password);
+        signupButton = new JButton("Sign up");
+        signupButton.setBounds(125, 200, 150, 30);
+        signupButton.addActionListener(this);
 
-                if (user == null) {
-                    JOptionPane.showMessageDialog(null, "Incorrect username or password.");
-                } else {
-                    loginFrame.dispose();
-                    new ExpenseTrackerGUI(user).open();
-                }
-            }
-        });
+        add(userLabel);
+        add(passwordLabel);
+        add(userTextField);
+        add(passwordField);
+        add(loginButton);
+        add(resetButton);
+        add(signupButton);
 
-        constraints.gridx = 1;
-        constraints.gridy = 2;
-        constraints.insets = new Insets(20, 10, 10, 10);
-        panel.add(loginButton, constraints);
-
-        loginFrame.add(panel);
-        loginFrame.pack();
-        loginFrame.setLocationRelativeTo(null);
-        loginFrame.setVisible(true);
+        setTitle("Login Page");
+        setSize(400, 300);
+        setLayout(null);
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private User authenticate(String username, String password) {
-        String url = "jdbc:mysql://localhost:3306/expensetracker";
-        String user = "root";
-        String pass = "12345";
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == loginButton) {
+            String user = userTextField.getText();
+            String password = new String(passwordField.getPassword());
 
-        try {
-            Connection con = DriverManager.getConnection(url, user, pass);
-            String query = "SELECT * FROM user WHERE userID =? AND password =?";
-            PreparedStatement stmt = con.prepareStatement(query);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return new User();
+            if (user.equals("admin") && password.equals("admin123")) {
+                JOptionPane.showMessageDialog(this, "Login successful!");
+            } else {
+                JOptionPane.showMessageDialog(this, "Invalid username or password.");
             }
+        } else if (e.getSource() == resetButton) {
+            userTextField.setText("");
+            passwordField.setText("");
+        } else if (e.getSource() == signupButton) {
+            String username = JOptionPane.showInputDialog(this, "Enter a new username:");
+            String password = JOptionPane.showInputDialog(this, "Enter a new password:");
 
-            con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            // Add code here to store the new user details in the database
+
+            JOptionPane.showMessageDialog(this, "New user created successfully!");
         }
-
-        return null;
     }
 
     public static void main(String[] args) {
@@ -101,119 +76,4 @@ public class ExpenseTrackerLogin {
     }
 }
 
-class ExpenseTrackerGUI {
-    private JFrame mainFrame;
-    private User user;
-    public User getUser() {
-        return user;
-    }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    private JTable table;
-    private JTextField expenseField;
-    public JTextField getExpenseField() {
-        return expenseField;
-    }
-
-    public void setExpenseField(JTextField expenseField) {
-        this.expenseField = expenseField;
-    }
-
-    private JTextField amountField;
-
-    public JTextField getAmountField() {
-        return amountField;
-    }
-
-    public void setAmountField(JTextField amountField) {
-        this.amountField = amountField;
-    }
-
-    /**
-     * @param user
-     */
-    public ExpenseTrackerGUI(User user) {
-        this.user = user;
-        mainFrame = new JFrame("Expense Tracker - " + user.getUsername());
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JPanel panel = new JPanel(new BorderLayout());
-
-        // Create table model and populate with user's expenses
-        ExpenseTableModel tableModel = new ExpenseTableModel();
-        tableModel.populate(user.getId());
-
-        table = new JTable((TableModel) tableModel);
-        JScrollPane scrollPane = new JScrollPane(table);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        // Create button panel for adding expenses
-JPanel buttonPanel = new JPanel();
-buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-
-JLabel balanceLabel = new JLabel("Balance: " + tableModel.getBalance());
-buttonPanel.add(balanceLabel);
-
-buttonPanel.add(Box.createHorizontalGlue());
-
-JButton addButton = new JButton("Add Expense");
-addButton.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        String description = JOptionPane.showInputDialog("Enter description:");
-        if (description == null || description.isEmpty()) {
-            return;
-        }
-
-        String amountStr = JOptionPane.showInputDialog("Enter amount:");
-        if (amountStr == null || amountStr.isEmpty()) {
-            return;
-        }
-
-        double amount;
-        try {
-            amount = Double.parseDouble(amountStr);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Invalid amount.");
-            return;
-        }
-
-        Expense expense = new Expense(description, amount, user.getId());
-        tableModel.addExpense(expense);
-        balanceLabel.setText("Balance: " + tableModel.getBalance());
-
-        // Save expense to database
-        String url = "jdbc:mysql://localhost:3306/expensetracker";
-        String user = "root";
-        String pass = "12345";
-
-        try {
-            Connection con = DriverManager.getConnection(url, user, pass);
-            String query = "INSERT INTO expenses (description, amount, user_id) VALUES (?, ?, ?)";
-            PreparedStatement stmt = con.prepareStatement(query);
-            stmt.setString(1, expense.getDescription());
-            stmt.setDouble(2, expense.getAmount());
-            stmt.setInt(3, expense.getUserId());
-            stmt.executeUpdate();
-
-            con.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-});
-buttonPanel.add(addButton);
-
-panel.add(buttonPanel, BorderLayout.PAGE_END);
-
-mainFrame.add(panel);
-mainFrame.pack();
-mainFrame.setLocationRelativeTo(null);
-mainFrame.setVisible(true);
-    }
-
-    public void open() {
-    }
-}
