@@ -73,6 +73,25 @@ public class ExpenseTrackerSignup {
         panel.add(userIDTextField, gbc_userIDTextField);
         userIDTextField.setColumns(10);
 
+        // User ID label
+        JLabel userLabel = new JLabel("Username:");
+        GridBagConstraints gbc_userLabel = new GridBagConstraints();
+        gbc_userLabel.anchor = GridBagConstraints.EAST;
+        gbc_userLabel.insets = new Insets(0, 0, 5, 5);
+        gbc_userLabel.gridx = 0;
+        gbc_userLabel.gridy = 0;
+        panel.add(userLabel, gbc_userLabel);
+
+        // User ID text field
+        JTextField userTextField = new JTextField();
+        GridBagConstraints gbc_userTextField = new GridBagConstraints();
+        gbc_userTextField.insets = new Insets(0, 0, 5, 0);
+        gbc_userTextField.fill = GridBagConstraints.HORIZONTAL;
+        gbc_userTextField.gridx = 1;
+        gbc_userTextField.gridy = 0;
+        panel.add(userTextField, gbc_userTextField);
+        userTextField.setColumns(10);
+
         JLabel passwordLabel = new JLabel("Password:");
         GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
         gbc_passwordLabel.anchor = GridBagConstraints.EAST;
@@ -87,6 +106,7 @@ public class ExpenseTrackerSignup {
         gbc_passwordField.gridx = 1;
         gbc_passwordField.gridy = 1;
         panel.add(passwordField, gbc_passwordField);
+
 
         // Create the Signup button and add an action listener to it
 JButton signupButton = new JButton("Signup");

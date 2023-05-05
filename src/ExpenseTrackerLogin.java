@@ -1,219 +1,79 @@
-import javax.swing.*;
-import javax.swing.table.TableModel;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
+import java.util.Scanner;
 
 public class ExpenseTrackerLogin {
-    private JFrame loginFrame;
-    private JTextField usernameField;
-    private JPasswordField passwordField;
-
-    public ExpenseTrackerLogin() {
-        loginFrame = new JFrame("Expense Tracker - Login");
-        loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.fill = GridBagConstraints.HORIZONTAL;
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        constraints.insets = new Insets(10, 10, 10, 10);
-
-        JLabel usernameLabel = new JLabel("Username:");
-        panel.add(usernameLabel, constraints);
-
-        constraints.gridx = 1;
-        usernameField = new JTextField();
-        panel.add(usernameField, constraints);
-
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        JLabel passwordLabel = new JLabel("Password:");
-        panel.add(passwordLabel, constraints);
-
-        constraints.gridx = 1;
-        passwordField = new JPasswordField();
-        panel.add(passwordField, constraints);
-
-        JButton loginButton = new JButton("Login");
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                String password = new String(passwordField.getPassword());
-
-                if (username.isEmpty() || password.isEmpty()) {
-                    JOptionPane.showMessageDialog(null, "Please enter a username and password.");
-                    return;
-                }
-
-                User user = authenticate(username, password);
-
-                if (user == null) {
-                    JOptionPane.showMessageDialog(null, "Incorrect username or password.");
-                } else {
-                    loginFrame.dispose();
-                    new ExpenseTrackerGUI(user).open();
-                }
-            }
-        });
-
-        constraints.gridx = 1;
-        constraints.gridy = 2;
-        constraints.insets = new Insets(20, 10, 10, 10);
-        panel.add(loginButton, constraints);
-
-        loginFrame.add(panel);
-        loginFrame.pack();
-        loginFrame.setLocationRelativeTo(null);
-        loginFrame.setVisible(true);
-    }
-
-    private User authenticate(String username, String password) {
-        String url = "jdbc:mysql://localhost:3306/expensetracker";
-        String user = "root";
-        String pass = "12345";
-
+    public static void main(String[] args) {
+        // Establish the database connection
+        Connection conn = null;
         try {
-            Connection con = DriverManager.getConnection(url, user, pass);
-            String query = "SELECT * FROM user WHERE userID =? AND password =?";
-            PreparedStatement stmt = con.prepareStatement(query);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
-            ResultSet rs = stmt.executeQuery();
+            Class.forName("com.mysql.jdbc.Driver");
+            String url = "jdbc:mysql://localhost:3306/expense_tracker";
+            String user = "root";
+            String password = "12345";
+            conn = DriverManager.getConnection(url, user, password);
+            System.out.println("Connected to the database!");
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
 
-            if (rs.next()) {
-                return new User();
+        try (// Prompt the user to log in
+        Scanner scanner = new Scanner(System.in)) {
+            System.out.print("Enter your username: ");
+            String username = scanner.nextLine();
+            System.out.print("Enter your password: ");
+            String password = scanner.nextLine();
+
+            // Check if the user exists
+            int userId = -1;
+            try {
+                PreparedStatement stmt = conn.prepareStatement("SELECT id FROM user WHERE username=? AND password=?");
+                stmt.setString(1, username);
+                stmt.setString(2, password);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    userId = rs.getInt("id");
+                    System.out.println("Welcome " + username + "!");
+                } else {
+                    System.out.println("Invalid username or password");
+                    System.exit(1);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.exit(1);
             }
 
-            con.close();
+            // Retrieve the user's expenses
+            try {
+                PreparedStatement stmt = conn.prepareStatement("SELECT * FROM expense WHERE user_id=?");
+                stmt.setInt(1, userId);
+                ResultSet rs = stmt.executeQuery();
+                System.out.println("Your expenses:");
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String name = rs.getString("name");
+                    double amount = rs.getDouble("amount");
+                    String category = rs.getString("category");
+                    Date date = rs.getDate("date");
+                    System.out.println(id + " | " + name + " | " + amount + " | " + category + " | " + date);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
+        // Close the database connection
+        try {
+            conn.close();
+            System.out.println("Disconnected from database");
         } catch (SQLException e) {
             e.printStackTrace();
+            System.exit(1);
         }
-
-        return null;
-    }
-
-    public static void main(String[] args) {
-        new ExpenseTrackerLogin();
-    }
-}
-
-class ExpenseTrackerGUI {
-    private JFrame mainFrame;
-    private User user;
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    private JTable table;
-    private JTextField expenseField;
-    public JTextField getExpenseField() {
-        return expenseField;
-    }
-
-    public void setExpenseField(JTextField expenseField) {
-        this.expenseField = expenseField;
-    }
-
-    private JTextField amountField;
-
-    public JTextField getAmountField() {
-        return amountField;
-    }
-
-    public void setAmountField(JTextField amountField) {
-        this.amountField = amountField;
-    }
-
-    /**
-     * @param user
-     */
-    public ExpenseTrackerGUI(User user) {
-        this.user = user;
-        mainFrame = new JFrame("Expense Tracker - " + user.getUsername());
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JPanel panel = new JPanel(new BorderLayout());
-
-        // Create table model and populate with user's expenses
-        ExpenseTableModel tableModel = new ExpenseTableModel();
-        tableModel.populate(user.getId());
-
-        table = new JTable((TableModel) tableModel);
-        JScrollPane scrollPane = new JScrollPane(table);
-        panel.add(scrollPane, BorderLayout.CENTER);
-
-        // Create button panel for adding expenses
-JPanel buttonPanel = new JPanel();
-buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.LINE_AXIS));
-
-JLabel balanceLabel = new JLabel("Balance: " + tableModel.getBalance());
-buttonPanel.add(balanceLabel);
-
-buttonPanel.add(Box.createHorizontalGlue());
-
-JButton addButton = new JButton("Add Expense");
-addButton.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-        String description = JOptionPane.showInputDialog("Enter description:");
-        if (description == null || description.isEmpty()) {
-            return;
-        }
-
-        String amountStr = JOptionPane.showInputDialog("Enter amount:");
-        if (amountStr == null || amountStr.isEmpty()) {
-            return;
-        }
-
-        double amount;
-        try {
-            amount = Double.parseDouble(amountStr);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(null, "Invalid amount.");
-            return;
-        }
-
-        Expense expense = new Expense(description, amount, user.getId());
-        tableModel.addExpense(expense);
-        balanceLabel.setText("Balance: " + tableModel.getBalance());
-
-        // Save expense to database
-        String url = "jdbc:mysql://localhost:3306/expensetracker";
-        String user = "root";
-        String pass = "12345";
-
-        try {
-            Connection con = DriverManager.getConnection(url, user, pass);
-            String query = "INSERT INTO expenses (description, amount, user_id) VALUES (?, ?, ?)";
-            PreparedStatement stmt = con.prepareStatement(query);
-            stmt.setString(1, expense.getDescription());
-            stmt.setDouble(2, expense.getAmount());
-            stmt.setInt(3, expense.getUserId());
-            stmt.executeUpdate();
-
-            con.close();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-});
-buttonPanel.add(addButton);
-
-panel.add(buttonPanel, BorderLayout.PAGE_END);
-
-mainFrame.add(panel);
-mainFrame.pack();
-mainFrame.setLocationRelativeTo(null);
-mainFrame.setVisible(true);
-    }
-
-    public void open() {
     }
 }
