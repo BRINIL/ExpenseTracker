@@ -10,6 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -57,56 +58,79 @@ public class ExpenseTrackerSignup {
         panel.setLayout(layout);
 
         JLabel userIDLabel = new JLabel("User ID:");
-        GridBagConstraints gbc_userIDLabel = new GridBagConstraints();
-        gbc_userIDLabel.anchor = GridBagConstraints.EAST;
-        gbc_userIDLabel.insets = new Insets(0, 0, 5, 5);
-        gbc_userIDLabel.gridx = 0;
-        gbc_userIDLabel.gridy = 0;
-        panel.add(userIDLabel, gbc_userIDLabel);
+GridBagConstraints gbc_userIDLabel = new GridBagConstraints();
+gbc_userIDLabel.anchor = GridBagConstraints.EAST;
+gbc_userIDLabel.insets = new Insets(0, 0, 5, 5);
+gbc_userIDLabel.gridx = 0;
+gbc_userIDLabel.gridy = 0;
+panel.add(userIDLabel, gbc_userIDLabel);
 
-        userIDTextField = new JTextField();
-        GridBagConstraints gbc_userIDTextField = new GridBagConstraints();
-        gbc_userIDTextField.insets = new Insets(0, 0, 5, 0);
-        gbc_userIDTextField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_userIDTextField.gridx = 1;
-        gbc_userIDTextField.gridy = 0;
-        panel.add(userIDTextField, gbc_userIDTextField);
-        userIDTextField.setColumns(10);
+userIDTextField = new JTextField();
+GridBagConstraints gbc_userIDTextField = new GridBagConstraints();
+gbc_userIDTextField.insets = new Insets(0, 0, 5, 0);
+gbc_userIDTextField.fill = GridBagConstraints.HORIZONTAL;
+gbc_userIDTextField.gridx = 1;
+gbc_userIDTextField.gridy = 0;
+panel.add(userIDTextField, gbc_userIDTextField);
+userIDTextField.setColumns(10);
 
-        // User ID label
-        JLabel userLabel = new JLabel("Username:");
-        GridBagConstraints gbc_userLabel = new GridBagConstraints();
-        gbc_userLabel.anchor = GridBagConstraints.EAST;
-        gbc_userLabel.insets = new Insets(0, 0, 5, 5);
-        gbc_userLabel.gridx = 0;
-        gbc_userLabel.gridy = 0;
-        panel.add(userLabel, gbc_userLabel);
+// Username label
+JLabel userLabel = new JLabel("Username:");
+GridBagConstraints gbc_userLabel = new GridBagConstraints();
+gbc_userLabel.anchor = GridBagConstraints.EAST;
+gbc_userLabel.insets = new Insets(0, 0, 5, 5);
+gbc_userLabel.gridx = 0;
+gbc_userLabel.gridy = 1;
+panel.add(userLabel, gbc_userLabel);
 
-        // User ID text field
-        JTextField userTextField = new JTextField();
-        GridBagConstraints gbc_userTextField = new GridBagConstraints();
-        gbc_userTextField.insets = new Insets(0, 0, 5, 0);
-        gbc_userTextField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_userTextField.gridx = 1;
-        gbc_userTextField.gridy = 0;
-        panel.add(userTextField, gbc_userTextField);
-        userTextField.setColumns(10);
+// Username text field
+JTextField userTextField = new JTextField();
+GridBagConstraints gbc_userTextField = new GridBagConstraints();
+gbc_userTextField.insets = new Insets(0, 0, 5, 0);
+gbc_userTextField.fill = GridBagConstraints.HORIZONTAL;
+gbc_userTextField.gridx = 1;
+gbc_userTextField.gridy = 1;
+panel.add(userTextField, gbc_userTextField);
+userTextField.setColumns(10);
 
-        JLabel passwordLabel = new JLabel("Password:");
-        GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
-        gbc_passwordLabel.anchor = GridBagConstraints.EAST;
-        gbc_passwordLabel.insets = new Insets(0, 0, 0, 5);
-        gbc_passwordLabel.gridx = 0;
-        gbc_passwordLabel.gridy = 1;
-        panel.add(passwordLabel, gbc_passwordLabel);
+// Password label
+JLabel passwordLabel = new JLabel("Password:");
+GridBagConstraints gbc_passwordLabel = new GridBagConstraints();
+gbc_passwordLabel.anchor = GridBagConstraints.EAST;
+gbc_passwordLabel.insets = new Insets(0, 0, 5, 5);
+gbc_passwordLabel.gridx = 0;
+gbc_passwordLabel.gridy = 2;
+panel.add(passwordLabel, gbc_passwordLabel);
 
-        passwordField = new JPasswordField();
-        GridBagConstraints gbc_passwordField = new GridBagConstraints();
-        gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
-        gbc_passwordField.gridx = 1;
-        gbc_passwordField.gridy = 1;
-        panel.add(passwordField, gbc_passwordField);
+// Password text field
+JPasswordField passwordField = new JPasswordField();
+GridBagConstraints gbc_passwordField = new GridBagConstraints();
+gbc_passwordField.insets = new Insets(0, 0, 5, 0);
+gbc_passwordField.fill = GridBagConstraints.HORIZONTAL;
+gbc_passwordField.gridx = 1;
+gbc_passwordField.gridy = 2;
+panel.add(passwordField, gbc_passwordField);
+passwordField.setColumns(10);
 
+// User type label
+JLabel userTypeLabel = new JLabel("User Type:");
+GridBagConstraints gbc_userTypeLabel = new GridBagConstraints();
+gbc_userTypeLabel.anchor = GridBagConstraints.EAST;
+gbc_userTypeLabel.insets = new Insets(0, 0, 0, 5);
+gbc_userTypeLabel.gridx = 0;
+gbc_userTypeLabel.gridy = 3;
+panel.add(userTypeLabel, gbc_userTypeLabel);
+
+// User type combo box
+String[] userTypes = {"Admin", "User", "Guest"};
+JComboBox<String> userTypeComboBox = new JComboBox<>(userTypes);
+GridBagConstraints gbc_userTypeComboBox = new GridBagConstraints();
+gbc_userTypeComboBox.fill = GridBagConstraints.HORIZONTAL;
+gbc_userTypeComboBox.gridx = 1;
+gbc_userTypeComboBox.gridy = 3;
+panel.add(userTypeComboBox, gbc_userTypeComboBox);
+
+        
 
         // Create the Signup button and add an action listener to it
 JButton signupButton = new JButton("Signup");
