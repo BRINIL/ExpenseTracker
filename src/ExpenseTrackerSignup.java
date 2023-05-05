@@ -116,9 +116,9 @@ passwordField.setColumns(10);
 JLabel userTypeLabel = new JLabel("User Type:");
 GridBagConstraints gbc_userTypeLabel = new GridBagConstraints();
 gbc_userTypeLabel.anchor = GridBagConstraints.EAST;
-gbc_userTypeLabel.insets = new Insets(0, 0, 0, 5);
+gbc_userTypeLabel.insets = new Insets(0, 0, 5, 5);
 gbc_userTypeLabel.gridx = 0;
-gbc_userTypeLabel.gridy = 3;
+gbc_userTypeLabel.gridy = 3; // Updated value
 panel.add(userTypeLabel, gbc_userTypeLabel);
 
 // User type combo box
@@ -127,10 +127,9 @@ JComboBox<String> userTypeComboBox = new JComboBox<>(userTypes);
 GridBagConstraints gbc_userTypeComboBox = new GridBagConstraints();
 gbc_userTypeComboBox.fill = GridBagConstraints.HORIZONTAL;
 gbc_userTypeComboBox.gridx = 1;
-gbc_userTypeComboBox.gridy = 3;
+gbc_userTypeComboBox.gridy = 3; // Updated value
 panel.add(userTypeComboBox, gbc_userTypeComboBox);
 
-        
 
         // Create the Signup button and add an action listener to it
 JButton signupButton = new JButton("Signup");
