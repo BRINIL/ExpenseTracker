@@ -2,6 +2,7 @@
     "configurations": [
         {
             "type": "java",
+<<<<<<< Updated upstream
 <<<<<<< HEAD
             "name": "ExpenseTracker",
             "request": "launch",
@@ -15,6 +16,15 @@
             "mainClass": "DBConnection",
             "projectName": "ExpenseTracker_eeb2440e"
 =======
+=======
+            "name": "DatabaseExample",
+            "request": "launch",
+            "mainClass": "DatabaseExample",
+            "projectName": "ExpenseTracker_d609bac8"
+        },
+        {
+            "type": "java",
+>>>>>>> Stashed changes
             "name": "ExpenseTrackerLogin",
             "request": "launch",
             "mainClass": "ExpenseTrackerLogin",
