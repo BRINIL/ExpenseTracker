@@ -65,6 +65,20 @@
             "name": "ExpenseTrackerSignup",
             "request": "launch",
             "mainClass": "ExpenseTrackerSignup",
+            "projectName": "ExpenseTracker_f9d1329a"
+        },
+        {
+            "type": "java",
+            "name": "ExpenseTrackerLogin",
+            "request": "launch",
+            "mainClass": "ExpenseTrackerLogin",
+            "projectName": "ExpenseTracker_f9d1329a"
+        },
+        {
+            "type": "java",
+            "name": "ExpenseTrackerSignup",
+            "request": "launch",
+            "mainClass": "ExpenseTrackerSignup",
             "projectName": "Expense_tracker_88e05f42"
         },
         {
