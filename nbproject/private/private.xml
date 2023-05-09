@@ -3,10 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/D:/NetBeansExpTrckr/JavaApplication1/src/db/DbConnect.java</file>
-            <file>file:/D:/NetBeansExpTrckr/JavaApplication1/src/gui/Category.java</file>
-            <file>file:/D:/NetBeansExpTrckr/JavaApplication1/src/gui/ViewSpending.java</file>
-            <file>file:/D:/NetBeansExpTrckr/JavaApplication1/src/gui/ExpenseTracker.java</file>
+            <file>file:/D:/NetBeansExpTrckr/ExpenseTracker/src/db/DbConnect.java</file>
+            <file>file:/D:/NetBeansExpTrckr/ExpenseTracker/src/gui/ExpenseTracker.java</file>
+            <file>file:/D:/NetBeansExpTrckr/ExpenseTracker/src/gui/login.java</file>
+            <file>file:/D:/NetBeansExpTrckr/ExpenseTracker/src/gui/Category.java</file>
+            <file>file:/D:/NetBeansExpTrckr/ExpenseTracker/src/gui/ViewSpending.java</file>
         </group>
     </open-files>
 </project-private>

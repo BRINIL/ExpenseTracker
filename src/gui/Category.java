@@ -21,8 +21,8 @@ public class Category extends javax.swing.JFrame {
     }
     private void getEntries(){
     try{
-        javax.swing.table.DefaultTableModel dtm=(javax.swing.table.DefaultTableModel)table.getModel();
-        int rc=dtm.getRowCount();
+        javax.swing.table.DefaultTableModel dtm=(javax.swing.table.DefaultTableModel)table.getModel(); //in order to avoid repetition of elements while displaying
+        int rc=dtm.getRowCount(); //it will first get the view of the model, then check if it has entries or not, and then empties it.
         while(rc--!=0){
             dtm.removeRow(0);
         }
@@ -215,9 +215,11 @@ public class Category extends javax.swing.JFrame {
 
     
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int ri=table.getSelectedRow();
+        if(ri!=-1){
         int r=JOptionPane.showConfirmDialog(rootPane, "Do you really want to delete", "Delete confirmation", JOptionPane.YES_NO_OPTION);
         if(r==JOptionPane.YES_OPTION){
-            int ri=table.getSelectedRow(); //The below commands will get the row index and the corresponding category from next row(index=1)
+            //The below commands will get the row index and the corresponding category from next row(index=1)
         String category=(String)table.getValueAt(ri, 1); //and will delete the entry from the database, and then upon calling getEntries()
         try{                                                     //the table will be refreshed
             db.DbConnect.st.executeUpdate("delete from category_info where category='"+category+"'");
@@ -229,7 +231,7 @@ public class Category extends javax.swing.JFrame {
         }
         
     }//GEN-LAST:event_jButton3ActionPerformed
-
+    }
     /**
      * @param args the command line arguments
      */
