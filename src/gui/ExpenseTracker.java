@@ -3,9 +3,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package gui;
+
 import java.sql.*;
 import javax.swing.JOptionPane;
-
+import gui.Register;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 /**
  *
  * @author Angitha G
@@ -15,54 +18,52 @@ public class ExpenseTracker extends javax.swing.JFrame {
     /**
      * Creates new form ExpenseTracker
      */
-    public ExpenseTracker(){
+    public ExpenseTracker() {
         initComponents();
         displayCategory();
         d.setSelectableDateRange(null, new java.util.Date()); //No date succeeding computer's current date can be chosen in 'date' column
         getEntries();
         d.setDate(new java.util.Date());
-        
-     }
 
-    
-    
-    
-    private void displayCategory(){
-        try{ //Here the values of the column"category" are brought from the database to the selected category combo button
+    }
+
+    private void displayCategory() {
+        try { //Here the values of the column"category" are brought from the database to the selected category combo button
             category.removeAllItems();// Empties elements in 'category' column and the new value is displayed
             ResultSet rs = db.DbConnect.st.executeQuery("select * from category_info");
-            while(rs.next()){
+            while (rs.next()) {
                 category.addItem(rs.getString("category")); //first category = table name, secong category= column name of category_info
             }
-            
-        
-    }catch(Exception ex){
-        JOptionPane.showMessageDialog(null, ex);
-        
-    }
-    }
-    private void getEntries(){//the value of the expenses wrt to the current month will be displayed from the databases
-        try{
-            javax.swing.table.DefaultTableModel dtm=(javax.swing.table.DefaultTableModel)table.getModel();
-            int rc=dtm.getRowCount(); //code to empty the table
-            while(rc--!=0){
-            dtm.removeRow(0);}
-            java.time.LocalDate cd=java.time.LocalDate.now();
-            java.time.LocalDate bd=cd.minusDays(20);
-            ResultSet rs = db.DbConnect.st.executeQuery("select * from spendings where sdate<='"+cd+"' and sdate>='"+bd+"'"); //code to display expenses 20 days before
-            int total=0;
-            while(rs.next()){
-                int t=rs.getInt("amount");
-                total+=t;
-                Object o[]={rs.getInt("sid"), rs.getString("category"), rs.getDate("sdate"), rs.getInt("amount")};
-                dtm.addRow(o);
-        }totalAmount.setText(total+"");
+
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+
         }
-        catch(Exception ex){
-           JOptionPane.showMessageDialog(null, ex);
-        }} 
-    
-    
+    }
+
+    private void getEntries() {//the value of the expenses wrt to the current month will be displayed from the databases
+        try {
+            String user = Register.LCDString;
+            javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel) table.getModel();
+            int rc = dtm.getRowCount(); //code to empty the table
+            while (rc-- != 0) {
+                dtm.removeRow(0);
+            }
+            java.time.LocalDate cd = java.time.LocalDate.now();
+            java.time.LocalDate bd = cd.minusDays(20);
+            ResultSet rs = db.DbConnect.st.executeQuery("select * from " + user + " where sdate<='"+cd+"' and sdate>='"+bd+"'");
+            int total = 0;
+            while (rs.next()) {
+                int t = rs.getInt("amount");
+                total += t;
+                Object o[] = {rs.getInt("sid"), rs.getString("category"), rs.getDate("sdate"), rs.getInt("amount")};
+                dtm.addRow(o);
+            }
+            totalAmount.setText(total + "");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -110,6 +111,9 @@ public class ExpenseTracker extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("ExpenseTracker");
+        setPreferredSize(new java.awt.Dimension(800, 554));
+        setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel3.setBackground(new java.awt.Color(102, 0, 102));
 
@@ -238,6 +242,8 @@ public class ExpenseTracker extends javax.swing.JFrame {
                 .addGap(0, 11, Short.MAX_VALUE))
         );
 
+        getContentPane().add(jPanel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 16, -1, -1));
+
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -257,12 +263,21 @@ public class ExpenseTracker extends javax.swing.JFrame {
         table.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(table);
 
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 200, 796, 174));
+
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jLabel5.setText("Current Month Spending ");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 175, -1, -1));
 
         jButton3.setBackground(new java.awt.Color(255, 51, 51));
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton3.setText("Remove");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(675, 172, -1, -1));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel6.setText(" Total Amount: ");
@@ -290,6 +305,8 @@ public class ExpenseTracker extends javax.swing.JFrame {
                     .addComponent(totalAmount))
                 .addContainerGap(110, Short.MAX_VALUE))
         );
+
+        getContentPane().add(jPanel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 380, 796, -1));
 
         jMenu2.setText("Master");
 
@@ -336,44 +353,12 @@ public class ExpenseTracker extends javax.swing.JFrame {
 
         setJMenuBar(jMenuBar3);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel5)
-                .addGap(533, 533, 533)
-                .addComponent(jButton3)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING))
-                .addGap(610, 610, 610))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jButton3))
-                .addGap(5, 5, 5)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(67, Short.MAX_VALUE))
-        );
-
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void aActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_aActionPerformed
-        
+
     }//GEN-LAST:event_aActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -382,23 +367,24 @@ public class ExpenseTracker extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try{
-            java.util.Date dt=d.getDate(); //This format is to stro date in java and not database
-            String s1=a.getText();
-            String s2=(String)category.getSelectedItem();
-            if(dt!=null && !s1.equals("")&& !s2.equals("")){
-                int amount=Integer.parseInt(s1);
-                java.sql.Date date= new java.sql.Date(dt.getTime()); //DateConversion for stroing into database, gettime gives the time in ml secs.
-                db.DbConnect.st.executeUpdate("insert into spendings(category, sdate, amount) values('"+s2+"', '"+date+"', "+amount+")"); //Note sid is auto incremented
+        try {
+            java.util.Date dt = d.getDate(); //This format is to stro date in java and not database
+            String s1 = a.getText();
+            String s2 = (String) category.getSelectedItem();
+            if (dt != null && !s1.equals("") && !s2.equals("")) {
+                int amount = Integer.parseInt(s1);
+                java.sql.Date date = new java.sql.Date(dt.getTime()); //DateConversion for stroing into database, gettime gives the time in ml secs.
+                db.DbConnect.st.executeUpdate("insert into spendings(category, sdate, amount) values('" + s2 + "', '" + date + "', " + amount + ")"); //Note sid is auto incremented
                 JOptionPane.showMessageDialog(null, "Expense Successfully added");
                 getEntries();
-            }else{
+            } else {
                 JOptionPane.showMessageDialog(null, "Please fill all the details");
-            }}
-            catch(Exception ex){
-        JOptionPane.showMessageDialog(null, ex);}
-        
-              
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -414,21 +400,44 @@ public class ExpenseTracker extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenu3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu3ActionPerformed
-        JOptionPane.showMessageDialog(null, "Developed by Annet, Angitha & Brinilkuttans");
+//        JOptionPane.
+//                showMessageDialog(null, "Developed by Annet, Angitha & Brinilkuttans");
     }//GEN-LAST:event_jMenu3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
+        new ExpenseTracker().setVisible(true);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void categoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryActionPerformed
         //category.displayCategory();
     }//GEN-LAST:event_categoryActionPerformed
-             
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int ri = table.getSelectedRow();
+        if (ri != -1) {
+            int r = JOptionPane.showConfirmDialog(null,
+                    "Do you really wanna delete?", "Deletion Confirmation",
+                    JOptionPane.YES_NO_OPTION);
+            if (r == JOptionPane.YES_OPTION) {
+                int id = (int) table.getValueAt(ri, 0);
+                try {
+                    db.DbConnect.st.executeUpdate(
+                            "delete from spendings where sid=" + id);
+                    JOptionPane.showMessageDialog(null,
+                            "Successfully Deleted!");
+                    getEntries();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex);
+                }
+
+            }
+    }//GEN-LAST:event_jButton3ActionPerformed
+    }
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]){
+    public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
