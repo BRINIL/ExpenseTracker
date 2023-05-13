@@ -4,6 +4,12 @@
  */
 package gui;
 
+import com.mysql.cj.protocol.Resultset;
+import static db.DbConnect.c;
+//import static gui.Register.LCDString;
+import javax.swing.JOptionPane;
+import java.sql.*;
+
 /**
  *
  * @author Angitha G
@@ -13,10 +19,12 @@ public class loginorreg extends javax.swing.JFrame {
     /**
      * Creates new form loginorreg
      */
+    public static String LCDString = "";    //change made by me
     public loginorreg() {
         initComponents();
     }
 
+          
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -32,8 +40,8 @@ public class loginorreg extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jPasswordField1 = new javax.swing.JPasswordField();
+        username = new javax.swing.JTextField();
+        password = new javax.swing.JPasswordField();
         jComboBox1 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
@@ -73,15 +81,15 @@ public class loginorreg extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel4.setText("Password");
 
-        jTextField1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(102, 102, 102));
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        username.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        username.setForeground(new java.awt.Color(102, 102, 102));
+        username.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                usernameActionPerformed(evt);
             }
         });
 
-        jPasswordField1.setText("jPasswordField1");
+        password.setText("jPasswordField1");
 
         jComboBox1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Select", "Admin", "Candidate" }));
@@ -126,8 +134,8 @@ public class loginorreg extends javax.swing.JFrame {
                                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jButton1)))
                             .addGroup(jPanel3Layout.createSequentialGroup()
@@ -144,12 +152,12 @@ public class loginorreg extends javax.swing.JFrame {
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -179,12 +187,59 @@ public class loginorreg extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new ViewSpending().setVisible(true);
+        String user=username.getText();
+        String pas=password.getText();  //change made by me
+        String sqlQuery = "SELECT password FROM user_table WHERE username = ?";
+        int u=0;
+        LCDString = user;
+        int num = 0;
+        try{
+            if(user!=null && pas!=null)
+            {
+                ResultSet rst = db.DbConnect.st.executeQuery("SELECT COUNT(username) FROM login WHERE username = '"+user+"'");
+                while (rst.next()) {
+                    num = rst.getInt(1);
+                }
+                
+                if(num>0)
+                {
+//                    PreparedStatement pst=c.prepareStatement(sqlQuery);
+//                    pst.setString(1, user);
+//                    ResultSet rs = pst.executeQuery();
+                      ResultSet rs=db.DbConnect.st.executeQuery("select password from login where username='"+user+"'");
+                    if (rs.next())
+                    {
+                        String retrievedPassword = rs.getString("password");
+                        if (retrievedPassword.equals(pas))
+                        {
+                            //System.out.println("'"+user+"',Welcome to Spending Tracker!!");
+                            JOptionPane.showMessageDialog(null,"Welcome to Spending Tracker!!");
+                            new ExpenseTracker(user).setVisible(true);
+                        }else
+                        {
+                            JOptionPane.showMessageDialog(null,"username or password is incorrect!!");
+                        }
+                    }else
+                    {
+                        JOptionPane.showMessageDialog(null,"Error!!");
+                    }          
+                }else
+                {
+                    JOptionPane.showMessageDialog(null,"username does not Exist!");
+                }
+            }else
+            {
+            JOptionPane.showMessageDialog(null, "Fill all the fields!");
+            }
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
-        
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
+                 
+
+    }//GEN-LAST:event_usernameActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         new Register().setVisible(true);
@@ -222,6 +277,7 @@ public class loginorreg extends javax.swing.JFrame {
             public void run() {
                 new loginorreg().setVisible(true);
             }
+            
         });
     }
 
@@ -236,7 +292,8 @@ public class loginorreg extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JPasswordField password;
+    private javax.swing.JTextField username;
     // End of variables declaration//GEN-END:variables
 }
+

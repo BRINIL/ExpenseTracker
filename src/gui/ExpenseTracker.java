@@ -6,9 +6,10 @@ package gui;
 
 import java.sql.*;
 import javax.swing.JOptionPane;
+import java.time.LocalDate;
+import gui.loginorreg;
 import gui.Register;
-import java.time.*;
-import java.time.temporal.ChronoUnit;
+
 /**
  *
  * @author Angitha G
@@ -18,7 +19,10 @@ public class ExpenseTracker extends javax.swing.JFrame {
     /**
      * Creates new form ExpenseTracker
      */
-    public ExpenseTracker() {
+    public static String user;
+    public ExpenseTracker(String LCDString) {
+        this.user = LCDString;
+        System.out.println(this.user);
         initComponents();
         displayCategory();
         d.setSelectableDateRange(null, new java.util.Date()); //No date succeeding computer's current date can be chosen in 'date' column
@@ -43,15 +47,15 @@ public class ExpenseTracker extends javax.swing.JFrame {
 
     private void getEntries() {//the value of the expenses wrt to the current month will be displayed from the databases
         try {
-            String user = Register.LCDString;
             javax.swing.table.DefaultTableModel dtm = (javax.swing.table.DefaultTableModel) table.getModel();
             int rc = dtm.getRowCount(); //code to empty the table
             while (rc-- != 0) {
                 dtm.removeRow(0);
             }
-            java.time.LocalDate cd = java.time.LocalDate.now();
-            java.time.LocalDate bd = cd.minusDays(20);
-            ResultSet rs = db.DbConnect.st.executeQuery("select * from " + user + " where sdate<='"+cd+"' and sdate>='"+bd+"'");
+            
+            LocalDate cd = LocalDate.now();
+            LocalDate bd = cd.minusDays(20);
+            ResultSet rs = db.DbConnect.st.executeQuery("select * from " +user+ " where sdate<='"+cd+"' and sdate>='"+bd+"'");
             int total = 0;
             while (rs.next()) {
                 int t = rs.getInt("amount");
@@ -63,6 +67,7 @@ public class ExpenseTracker extends javax.swing.JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
+        
     }
 
     /**
@@ -374,7 +379,7 @@ public class ExpenseTracker extends javax.swing.JFrame {
             if (dt != null && !s1.equals("") && !s2.equals("")) {
                 int amount = Integer.parseInt(s1);
                 java.sql.Date date = new java.sql.Date(dt.getTime()); //DateConversion for stroing into database, gettime gives the time in ml secs.
-                db.DbConnect.st.executeUpdate("insert into spendings(category, sdate, amount) values('" + s2 + "', '" + date + "', " + amount + ")"); //Note sid is auto incremented
+                db.DbConnect.st.executeUpdate("insert into "+user+"(category, sdate, amount) value('" + s2 + "', '" + date + "', " + amount + ")"); //Note sid is auto incremented
                 JOptionPane.showMessageDialog(null, "Expense Successfully added");
                 getEntries();
             } else {
@@ -383,12 +388,14 @@ public class ExpenseTracker extends javax.swing.JFrame {
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(null, ex);
         }
+        //getEntries();
+        new ExpenseTracker(user).setVisible(true);
 
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        new ViewSpending().setVisible(true);//ViewSpending table called
+        new ViewSpending(user).setVisible(true);//ViewSpending table called
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
@@ -405,7 +412,12 @@ public class ExpenseTracker extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenu3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        new ExpenseTracker().setVisible(true);
+       // try{
+        //ResultSet rs=db.DbConnect.st.executeQuery("select * from spendings");
+        getEntries();
+//        }catch(Exception ex){
+//        JOptionPane.showMessageDialog(null, ex);
+//        } 
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void categoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_categoryActionPerformed
@@ -422,7 +434,7 @@ public class ExpenseTracker extends javax.swing.JFrame {
                 int id = (int) table.getValueAt(ri, 0);
                 try {
                     db.DbConnect.st.executeUpdate(
-                            "delete from spendings where sid=" + id);
+                            "delete from "+user+" where sid=" + id);
                     JOptionPane.showMessageDialog(null,
                             "Successfully Deleted!");
                     getEntries();
@@ -464,7 +476,7 @@ public class ExpenseTracker extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new ExpenseTracker().setVisible(true);
+                new ExpenseTracker(user).setVisible(true);
             }
         });
     }

@@ -5,7 +5,6 @@
 package gui;
 import java.sql.*;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 
 /**
  *
@@ -31,14 +30,15 @@ public class Register extends javax.swing.JFrame {
             if(user!=null && pas!=null){
             db.DbConnect.st.executeUpdate("insert into login values('"+user+"', '"+pas+"')");
             db.DbConnect.st.executeUpdate("create table "+user+"(sid int primary key AUTO_INCREMENT, category varchar(50) , sdate date , amount int )");
-           new ExpenseTracker().setVisible(true);
+            System.out.println("'"+user+"' , Account successfully created!!");
+            new ExpenseTracker(user).setVisible(true);
         }else{
                 JOptionPane.showMessageDialog(null, "Fill all the fields!");
             }
         }catch(Exception ex){
-            JOptionPane.showMessageDialog(null, ex);
+            JOptionPane.showMessageDialog(null, "Username already exists");
         }
-        LCDString = "+user+";
+        LCDString = user;
     }
 
     /**
@@ -89,7 +89,6 @@ public class Register extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel3.setText("Create Password:");
 
-        password.setText("jPasswordField1");
         password.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         password.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
