@@ -22,7 +22,7 @@ public class ExpenseTracker extends javax.swing.JFrame {
     public static String user;
     public ExpenseTracker(String LCDString) {
         this.user = LCDString;
-        System.out.println(this.user);
+//        System.out.println(this.user);
         initComponents();
         displayCategory();
         d.setSelectableDateRange(null, new java.util.Date()); //No date succeeding computer's current date can be chosen in 'date' column

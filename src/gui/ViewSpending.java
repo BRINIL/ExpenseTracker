@@ -9,6 +9,8 @@ import java.sql.*;
 import gui.loginorreg;
 import gui.Register;
 import gui.ExpenseTracker;
+import gui.Category;
+import static gui.ExpenseTracker.user;
 /**
  *
  * @author Angitha G
@@ -20,11 +22,14 @@ public class ViewSpending extends javax.swing.JFrame {
      */
     public static String user;
     public ViewSpending(String LCDString) {
+        this.user = LCDString;
         initComponents();
+        displayCategory();
         d1.setDate(new java.util.Date());
         d2.setDate(new java.util.Date());
         dd1.setDate(new java.util.Date());
         dd2.setDate(new java.util.Date());
+        
     }
     private void displayCategory(){  //displaying categories in the second sub-section
         try{
@@ -385,7 +390,7 @@ public class ViewSpending extends javax.swing.JFrame {
         }
         java.sql.Date dt1=new java.sql.Date(d1.getDate().getTime());
         java.sql.Date dt2=new java.sql.Date(d2.getDate().getTime());//sql object where date is converted to time and that we get
-        ResultSet rs=db.DbConnect.st.executeQuery("select * from "+user+" where sdate>='"+dt1+"' and sdate<='"+dt2+"'order by sdate asc");
+        ResultSet rs=db.DbConnect.st.executeQuery("select * from " +user+ " where sdate>='"+dt1+"' and sdate<='"+dt2+"' order by sdate asc");
         int total=0; 
     while(rs.next()){
         int t=rs.getInt("amount");
