@@ -7,5 +7,4 @@ If we are adding an expense that does not fall under any of the pre-defined cate
 * On clicking the option *Add new category*. This will redirect us to a new page 'Add Categories', where we can add new categories. If we wish to remove some of the categories, we can do so by clicking 'remove'.
 * Then nextly, we have a page *View Spendings*, where we have the flexibility to view our expenses date wise and category wise(with a user selected time frame).
 
-
-
+The project is created by **Annet Jacob, Angitha G, J. Brinil John**.
